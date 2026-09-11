@@ -213,6 +213,8 @@ public class Player implements Runnable {
     public int xSend;
     public int ySend;
     public boolean isFly;
+    public short idSpinePlayer = -1;
+    public String baseName;
     // shenron event
     public long lastTimeShenronAppeared;
     public boolean isShenronAppear;
@@ -341,7 +343,29 @@ public class Player implements Runnable {
             }
         }
     }
+    public void updateIdSpinePlayer() {
+        this.idSpinePlayer = -1;
+        try {
+            if (this.inventory != null && this.inventory.itemsBody != null && this.inventory.itemsBody.size() > 5) {
+                Item costume = this.inventory.itemsBody.get(5);
+                if (costume != null && costume.isNotNullItem() && costume.template.id > 2063) {
+                    this.idSpinePlayer = costume.template.id;
+                }
+            }
+        } catch (Exception e) {}
+        updateNameWithSpine();
+    }
 
+    public void updateNameWithSpine() {
+        if (this.baseName == null) {
+            return;
+        }
+        if (this.idSpinePlayer != -1) {
+            this.name = this.baseName + "<spine " + this.idSpinePlayer + ">";
+        } else {
+            this.name = this.baseName;
+        }
+    }
     public void start() {
         new Thread(this, "Update player " + this.name).start();
     }
